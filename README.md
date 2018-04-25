@@ -17,4 +17,5 @@
 
 # Tests
 
-* `rails test` - Run test
+* `rails test`
+* `rspec`
