@@ -4,9 +4,12 @@ RSpec.describe SalesController, type: :controller do
   describe 'GET #index' do
     before { create_list(:sale, 5) }
     before { get :index }
-    it { expect(assigns(:sales)).to_not be_empty }
-    it { expect(assigns(:sales).length).to eq 5 }
-    it { expect(response).to render_template :index }
+    it 'get all sales' do
+      expect(assigns(:sales)).to_not be_empty
+      expect(assigns(:sales).length).to eq 5
+      expect(assigns(:total)).to_not be_nil
+      expect(response).to render_template :index
+    end
   end
 
   describe 'GET #new' do
@@ -18,14 +21,18 @@ RSpec.describe SalesController, type: :controller do
     context 'uploading a file' do
       let!(:file) { fixture_file_upload('files/example_input.tab', 'application/octet-stream') }
       before { post :create, params: { file: file } }
-      it { expect(Sale.count).to eq 4 }
-      it { expect(response).to redirect_to sales_path }
+      it 'create sales' do
+        expect(Sale.count).to eq 4
+        expect(response).to redirect_to sales_path
+      end
     end
 
     context 'with no file' do
       before { post :create, params: { file: nil } }
-      it { expect(Sale.count).to eq 0 }
-      it { expect(response).to render_template :new }
+      it 'does not create sales' do
+        expect(Sale.count).to eq 0
+        expect(response).to render_template :new
+      end
     end
   end
 end
