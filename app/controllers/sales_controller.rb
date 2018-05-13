@@ -10,7 +10,7 @@ class SalesController < ApplicationController
     begin
       sales = FileService.instance.extract_sales(params[:file])
       Sale.transaction do
-        sales.each { |sale| sale.save }
+        sales.each { |sale| sale.save! }
       end
       redirect_to sales_path
     rescue

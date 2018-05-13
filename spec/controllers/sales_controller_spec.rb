@@ -18,12 +18,21 @@ RSpec.describe SalesController, type: :controller do
   end
 
   describe 'POST #create' do
-    context 'uploading a file' do
+    context 'with a valid file' do
       let!(:file) { fixture_file_upload('files/example_input.tab', 'application/octet-stream') }
       before { post :create, params: { file: file } }
       it 'create sales' do
         expect(Sale.count).to eq 4
         expect(response).to redirect_to sales_path
+      end
+    end
+
+    context 'with an invalid file' do
+      let!(:file) { fixture_file_upload('files/example_invalid_input.tab', 'application/octet-stream') }
+      before { post :create, params: { file: file } }
+      it 'does not create sales' do
+        expect(Sale.count).to eq 0
+        expect(response).to render_template :new
       end
     end
 
